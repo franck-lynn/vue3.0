@@ -1,0 +1,88 @@
+<template>
+    <div id="dynamic-component-demo" class="demo">
+        <button v-for="tab in tabs" :key="tab" :class="['tab-button', { active: isActive(tab) }]" @click="handleClick">
+            {{ tab }}
+        </button>
+
+        <h1 v-if="currentTabComponent ==='tab-home'">古都</h1>
+        <h1 v-if="currentTabComponent ==='tab-posts'">望月</h1>
+        <h1 v-if="currentTabComponent ==='tab-archive'">风月</h1>
+    </div>
+</template>
+
+<script>
+    //! 采用外部函数的方式进行判断当前点击的组件
+    import { defineComponent, ref, computed } from 'vue'
+    export default defineComponent({
+        name: 'current-click-ref-judgement',
+        props: {},
+        setup() {
+            const tabs = ["Home", "Posts", "Archive"]
+            // 保存当前点击的元素, 用 ref 和 reactive 都可以, 默认值是 Home
+            const currentTag = ref('Home')
+            // 计算当前组件值
+            const currentTabComponent = computed(() => {
+                // console.log('tab-' + currentTag.tabName.toLowerCase() === 'tab-posts')
+                return 'tab-' + currentTag.value.toLowerCase()
+            })
+            // 判断 是不是当前组件, 这里要传参数, 不能用 computed
+            const isActive = (tab) => {
+                // console.log("打印当前的标签: ", tab)
+                // console.log(currentTag.value)
+                return currentTag.value === tab
+            }
+
+            const handleClick = e => {
+                // console.log(e.currentTarget.innerHTML)
+                // 获取当前点击的元素, 并赋值给 currentTag
+                currentTag.value = e.currentTarget.innerHTML
+            }
+
+
+            return { tabs, currentTabComponent, handleClick, isActive }
+        }
+    })
+</script>
+
+<style lang="scss" scoped>
+    @font-face {
+        // 定义字体, format 打开字体就可以查看到格式类型
+        font-family: "my-font";
+        src: url("../../scss/stylesheets/my-font/米芾毛笔字体.ttf") format("opentype");
+    }
+
+    .demo {
+        margin: 15px;
+    }
+
+    h1 {
+        font-family: my-font;
+        margin: 15px;
+        font-size: 104px;
+        color: red;
+    }
+
+    .tab-button {
+        padding: 6px 10px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background: #f0f0f0;
+        margin-bottom: -1px;
+        margin-right: -1px;
+    }
+
+    .tab-button:hover {
+        background: #e0e0e0;
+    }
+
+    .tab-button.active {
+        background: #e0e0e0;
+    }
+
+    .tab {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+</style>

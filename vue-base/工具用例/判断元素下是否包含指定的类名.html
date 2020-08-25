@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>判断元素下是否包含指定的类名</title>
+</head>
+
+<body>
+    <ul class="nav-list">
+        <li class="nav-item">
+            <span>项目标题</span>
+            <ul class="sub-list">
+                <span>子项目标题</span>
+            </ul>
+        </li>
+    </ul>
+    <script>
+        // 判断元素是否包含类名
+        const hasClassName = (element, className) => element.className.indexOf(className) !== -1
+        // const childElement = document.querySelector('.sub-list')
+        // console.log(hasClassName(childElement, 'sub-list'))
+        // 判断父元素 是否包含子元素.
+        const hasChildName = (parent, childName) => parent.some((element) => hasClassName(element, childName))
+        
+        const parentElement = document.querySelector('.nav-item')
+        // console.log(parentElement.children)
+        const childrenArr = Array.from(parentElement.children)
+        console.log(childrenArr)
+        // 调用数组的 some 方法
+        console.log(
+            childrenArr.some(item => hasClassName(item, 'sub-list'))
+        )
+        console.log(
+            hasChildName(childrenArr, 'sub-list')
+        )
+    </script>
+</body>
+
+</html>
