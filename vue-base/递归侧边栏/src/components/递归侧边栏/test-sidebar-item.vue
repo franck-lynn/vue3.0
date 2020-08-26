@@ -6,6 +6,13 @@
 </template>
 
 <script>
+    /*
+    ! 展开一个数组的同时, 其他数组关闭的程序
+    <div class="sidenav">
+        <sidebar-items v-for="(item, index) in data" :key="index" :items=item :class="{'nav-list-active': currentTag === item[0].title}" @currentTag="handleCurrentTag"></sidebar-items>
+    </div>
+    
+    */
     import { defineComponent } from 'vue'
     export default defineComponent({
         name: 'test-sidebar-item',
@@ -20,6 +27,19 @@
                 [{ title: 'class one 4', children: [{ title: '二级D', children: [{ title: '三级', children: [{ title: '四级', children: [{ title: '五级' }] }] }] }] }]
             ]
             // const data = [[{ icon: 'icon-cogs', title: '一级1', href: 'javascript:void(0)', children: [{ title: '二级A', href: 'javascript:void(0)' }]}]]
+            /*
+            // TODO: 要实现一个当前打开的是第一级的哪个数组的判断
+            const currentTag = ref([])
+            const handleCurrentTag = (e) => {
+                // 获取 nav-list 的第一级 title 内容, 如果这个内容 和数组 第1级的 内容有, 就说明点击的是这个内容
+                // 不判断整个数组的原因是获取整个数组太麻烦
+                const navList = e.currentTarget.parentNode.querySelector('span[class^="nav-list-level-title-1"]').innerHTML
+                // console.log(navList)
+                currentTag.value =  navList
+                // console.log(item)
+            }
+             // TODO: 要实现一个当前打开的是第一级的哪个数组的判断
+             */
             return { data }
         }
     })

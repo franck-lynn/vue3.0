@@ -3,7 +3,7 @@
 
         <li v-for="(item, index) in items" :key="index" :class="[isDeepOne? 'nav-items': 'nav-sub-items', 
           `nav-list__level-${deep}`, {'pulldown-active': isCurrentTarget(currentTarget, item),
-          'pulldown-show': toggleShow(currentTarget, item)}]" @click="handleCurrentTarget($event, deep)">
+          'pulldown-show': toggleShow(currentTarget, item)}]" @click="handleCurrentTarget">
             <component :is="item.children ? 'span': 'a'" :class="item.children ? 
               'nav-list-title': 'nav-list-link'" :href="item.href">
                 <span v-if="item.icon" :class="['iconfont', item.icon]"></span>
@@ -47,7 +47,7 @@
             deep: { type: Number, default: 1 },
             items: { type: Array, default: () => [] }
         },
-        setup(props) {
+        setup(props, ctx) {
             const isDeepOne = computed(() => props.deep && props.deep === 1)
             // const currentTarget = reactive({})
             const currentTarget = reactive({})
@@ -75,30 +75,18 @@
             const handleCurrentTarget = (e) => {
                 e.stopPropagation() // 阻止事件传播
                 e.preventDefault()
-                //? 获取的都是对的, 难道是 item.title 里的值有问题?
-                //? 如果 currentTarget 是 最后一级, 就没有必要增加新的类了
-                // console.log(e.currentTarget.querySelector('span[class^="nav-list-level-title"]').innerHTML)
                 //? 要判断 下面 有 sub-list 的时候才添加 show 类, 没有下拉菜单, 就不需要这个切换类 show
                 //? 但是 , active 类还是需要的, 表示当前的点击处于激活状态
                 const currentChildrenArray = Array.from(e.currentTarget.children)
                 const hasSublist = hasChildName(currentChildrenArray, 'sub-list')
                 currentTarget.title = e.currentTarget.querySelector(`span[class^="nav-list-level-title-${props.deep}"]`).innerHTML
                 if (!hasSublist) {
-                    // 没有 sub-list 类, 也就不需要 show 类
-                    isShow.value = false 
+                    // 没有 sub-list 类, 也就不需要 show 类, 但是要 active 类
+                    isShow.value = false
                 } else {
-                    // 到这里说明是有下拉菜单的
-                    // console.log(hasSublist)
-                    // console.log(e.currentTarget.children)
-                    // console.log(hasChildName(currentChildrenArray, 'sub-list'))
-                    // TODO: 当前组件中有相同的数据, 所以根据 title 来判断是不是当前组件并不准确, 应该考虑增加数据
-                    // TODO: 只要第1级菜单不是 open, 下面的所有菜单都要隐藏
-                    // TODO: 同在一个数组里面可以切换 open 状态, 不同的数组就不行
-                    // TODO: 增加判断第1级的数组激活状态
-                    currentTarget.title = e.currentTarget.querySelector(`span[class^="nav-list-level-title-${props.deep}"]`).innerHTML
                     isShow.value = !isShow.value
-                    // console.log(isShow.value)
                 }
+                ctx.emit('currentTag', e)
             }
             // watch(currentTarget, (n, o) => {
             //     console.log(`新值是: ${n.title}, 旧值---> ${o.title}`)
@@ -236,22 +224,6 @@
                 }
             }
 
-            //? 02. 当在 nav-items 下的 nav-list-title 悬停时, 显示直接子元素
-            //? ============================================================
-            // &.pulldown-active {
-
-            //     // 当激打开活时, 要知道 show 是不是激活?
-            //     &.pulldown-show {
-            //         >.nav-list-title::after {
-            //             transform: rotate(315deg);
-            //         }
-
-            //         >.sub-list {
-            //             display: block;
-            //         }
-            //     }
-
-            // }
 
             &.pulldown-show {
                 >.nav-list-title::after {
@@ -276,5 +248,37 @@
             //? ============================================================
 
         }
+
+        //! 这个实现的是 打开一个一级菜单, 另外的关闭, 如果不需要关闭, 注释掉 &.nav-list-active
+        //! 打开上面 &.pulldown-show, 如果是为了更加美观
+        //! 可以把 这个组件的父组件中 handleCurrentTag 和 :class="{'nav-list-active': currentTag === item[0].title}"
+        //! 内容也可以去掉
+        //? ============================================================
+        // &.nav-list-active {
+        //     .nav-items {
+
+        //         // 如果根类是 active, 才进行显示
+        //         &.pulldown-show {
+        //             >.nav-list-title::after {
+        //                 transform: rotate(315deg);
+        //             }
+
+        //             >.sub-list {
+        //                 display: block;
+        //             }
+
+        //             .pulldown-show {
+        //                 >.nav-list-title::after {
+        //                     transform: rotate(315deg);
+        //                 }
+
+        //                 >.sub-list {
+        //                     display: block;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        //? ============================================================
     }
 </style>
