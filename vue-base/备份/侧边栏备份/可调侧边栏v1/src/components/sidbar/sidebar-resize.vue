@@ -8,10 +8,15 @@
             <!-- 分割线 -->
             <div class="separator"><i></i><i></i></div>
         </div>
+        
+        
+        
         <div class="main">
             <div class="content">右边内容 welcome to codingstartup </div>
             <div><a href="/#/">返回主页</a></div>
         </div>
+        
+        
     </div>
 
 </template>
@@ -64,7 +69,7 @@
                     // startWidth.value = parseInt(window.getComputedStyle(document.querySelector('.scalable')).width, 10)
                     // 把上面的 startWidth 包装成一个函数, 以便重用
                     startWidth.value = getScalableDivWidth()
-                    console.log("分割线左边的div宽度: ---> ", document.querySelector('.scalable').style.width)
+                    // console.log("分割线左边的div宽度: ---> ", document.querySelector('.scalable').style.width)
 
                     // console.log("分割线左边的div宽度: ---> ", startWidth.value)
                     //! 3, 鼠标移动时触发

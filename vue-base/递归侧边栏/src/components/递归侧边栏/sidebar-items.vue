@@ -2,19 +2,20 @@
     <ul :class="[isDeepOne ? 'nav-list' : 'sub-list']">
 
         <li v-for="(item, index) in items" :key="index" :class="[isDeepOne? 'nav-items': 'nav-sub-items', 
-          `nav-list__level-${deep}`, {'pulldown-active': isCurrentTarget(currentTarget, item),
-          'pulldown-show': toggleShow(currentTarget, item)}]" @click="handleCurrentTarget">
+              `nav-list__level-${deep}`, {'pulldown-active': isCurrentTarget(currentTarget, item),
+              'pulldown-show': toggleShow(currentTarget, item)}]" @click="handleCurrentTarget">
+
             <component :is="item.children ? 'span': 'a'" :class="item.children ? 
-              'nav-list-title': 'nav-list-link'" :href="item.href">
+                  'nav-list-title': 'nav-list-link'" :href="item.href">
                 <span v-if="item.icon" :class="['iconfont', item.icon]"></span>
                 <span :class="`nav-list-level-title-${deep}`"> {{item.title}} </span>
             </component>
 
             <sidebar-items v-if=item.children :items="item.children" :deep=deep+1></sidebar-items>
+
         </li>
 
     </ul>
-
 </template>
 
 <script>
@@ -53,6 +54,7 @@
             const currentTarget = reactive({})
             const isShow = ref(false)
 
+
             //* 判断元素是否包含给定的类名
             const hasClassName = (element, className) => element.className.indexOf(className) !== -1
             //* 判断父元素 是否包含子元素.
@@ -63,6 +65,7 @@
             }
             //* 判断是不是当前点击的元素
             const isCurrentTarget = (currentTarget, item) => {
+                // 是当前组件, 设置到 localStorge 中去
                 // console.log(currentTarget.value)
                 return currentTarget ? currentTarget.title === item.title : false
             }
@@ -80,12 +83,17 @@
                 const currentChildrenArray = Array.from(e.currentTarget.children)
                 const hasSublist = hasChildName(currentChildrenArray, 'sub-list')
                 currentTarget.title = e.currentTarget.querySelector(`span[class^="nav-list-level-title-${props.deep}"]`).innerHTML
+                console.log(currentTarget.title)
+
                 if (!hasSublist) {
                     // 没有 sub-list 类, 也就不需要 show 类, 但是要 active 类
                     isShow.value = false
                 } else {
                     isShow.value = !isShow.value
                 }
+                // 鼠标点击时保存状态
+                localStorage.setItem('current_target', currentTarget.title)
+                localStorage.setItem('is_show', isShow.value)
                 ctx.emit('currentTag', e)
             }
             // watch(currentTarget, (n, o) => {
@@ -105,6 +113,10 @@
                         item.previousSibling.style.marginLeft = 10 * level + 'px'
                     }
                 })
+                // 加载之后从 localStorge 中获取上次退出时保存的 当前打开的组件值
+                currentTarget.title = localStorage.getItem('current_target')
+                isShow.value = localStorage.getItem('is_show')
+
             })
             return { isDeepOne, currentTarget, isShow, isCurrentTarget, toggleShow, handleCurrentTarget }
         }
@@ -182,7 +194,11 @@
             .sub-list {
                 width: 100%;
                 //? 01. 刚开始时 nav-items 下的 sub-list 都是隐藏的
-                display: none; // 是 nav-item 上的菜单
+                visibility: visible; // 代替display 实现过渡效果
+                overflow: hidden; // 代替display 实现过渡效果
+                max-height: 0; // 代替display 实现过渡效果
+                // display: none; // 是 nav-item 上的菜单
+                transition: all .4s linear; // 代替display 实现过渡效果
 
                 .nav-sub-items {
                     font-size: 16px !important;
@@ -196,7 +212,7 @@
             //* 有下级菜单的 3列中最后一列靠右显示, > 的箭头符号
             .nav-list-title::after {
                 margin-left: auto;
-                margin-right: 1rem;
+                margin-right: 0.8rem;
                 content: ""; // 有下级菜单, 添加右向符号
                 height: 6px;
                 width: 6px;
@@ -226,12 +242,14 @@
 
 
             &.pulldown-show {
+
                 >.nav-list-title::after {
                     transform: rotate(315deg);
                 }
 
                 >.sub-list {
-                    display: block;
+                    // display: block;
+                    max-height: 200px; // 代替display 实现过渡效果
                 }
 
                 .pulldown-show {
@@ -240,7 +258,8 @@
                     }
 
                     >.sub-list {
-                        display: block;
+                        max-height: 200px; // 代替display 实现过渡效果
+                        // display: block;
                     }
                 }
             }
