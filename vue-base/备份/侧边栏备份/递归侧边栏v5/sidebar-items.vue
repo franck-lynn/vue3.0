@@ -322,7 +322,7 @@
                         width: 165px; // 与下级的 .sub-list 宽度相等
                         transition: all 1s ease-in-out;
                         margin-left: 0 !important;
-                        padding: 10px;
+                        // padding: 10px;
                     }
 
                     .nav-list-title:after {

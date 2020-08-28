@@ -39,7 +39,7 @@
             
             const data = [ // 这个数据要做校验, 例如: 最后一级的要增加  href 属性, 不然就是空链接, 不是最后一级的是标题, 不要有链接
                 [
-                    { icon: 'icon-cogs', title: '一级1', href: 'javascript:void(0)' }, 
+                    { icon: 'icon-cogs', title: '一级1', href: 'javascript:void(0)' },
                     { icon: 'icon-cogs', title: '一级菜单', children: [{ title: '二级A', icon: 'icon-cogs', href: 'javascript:void(0)' }, { title: '二级B', children: [{ title: '三级B-1', href: 'javascript:void(0)' }, { title: '三级B-2', href: 'javascript:void(0)' }] }] },
                 ],
                 [{ icon: 'icon-cogs', title: 'class one 3', children: [{ title: '二级C', href: 'javascript:void(0)' }, { title: '二级D', href: 'javascript:void(0)' }] }],
@@ -111,9 +111,8 @@
                     // 加载之后获取侧边栏 .saclable 的宽度
                     startWidth.value = localStorage.getItem('scalable_width') || getScalableDivWidth()
                     // 初始化时从 localStorge 中获取 isNarrow
-                    isNarrow.value = JSON.parse(localStorage.getItem('is_narrow')) || false
-                    // TODO:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    console.log("属性 TODO:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ", isNarrow.value, localStorage.getItem('is_narrow') , Boolean(localStorage.getItem('is_narrow')))
+                    isNarrow.value = Boolean(localStorage.getItem('is_narrow')) || false
+
                     document.querySelector('.scalable').style.width = startWidth.value + 'px'
                     // console.log("加载后执行---> ", startWidth.value)
                     document.querySelector('.separator').addEventListener('mousedown', startDrag)
