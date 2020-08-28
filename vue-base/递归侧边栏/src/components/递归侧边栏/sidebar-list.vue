@@ -28,6 +28,7 @@
         setup() {
             const isNarrow = ref(false)
             const currentTag = ref('')
+            const breakPoint = 80 // 设置左侧边栏宽窄断点
             const handleCurrentTag = (e) => {
                 // 接收子组件发射过来的事件,  判断的依据是这样的, 每次点击事件的发射过来的时候, 根据点击
                 // 的节点找到它的父节点, 会一直找到根部, 根据节点的第一个数据就是一级数组的第1个, 
@@ -43,7 +44,7 @@
                     { icon: 'icon-cogs', title: '一级菜单', children: [{ title: '二级A', icon: 'icon-cogs', href: 'javascript:void(0)' }, { title: '二级B', children: [{ title: '三级B-1', href: 'javascript:void(0)' }, { title: '三级B-2', href: 'javascript:void(0)' }] }] },
                 ],
                 [{ icon: 'icon-cogs', title: 'class one 3', children: [{ title: '二级C', href: 'javascript:void(0)' }, { title: '二级D', href: 'javascript:void(0)' }] }],
-                [{icon: 'icon-cogs', title: 'class one 4', children: [{ title: '二级D', children: [{ title: '三级', children: [{ title: '四级', children: [{ title: '五级' }] }] }] }] }]
+                [{ title: 'class one 4', children: [{ title: '二级D', children: [{ title: '三级', children: [{ title: '四级', children: [{ title: '五级' }] }] }] }] }]
             ]
             // const data = [[{ icon: 'icon-cogs', title: '一级1', href: 'javascript:void(0)', children: [{ title: '二级A', href: 'javascript:void(0)' }]}]]
 
@@ -76,7 +77,7 @@
                     // 新的宽度 = 开始时的侧边宽度 + 鼠标当前位置 - 鼠标在分割线时的位置
                     let newWidth = startWidth.value + e.clientX - startX.value
                     // isNarrow 改为在移动时实时触发, 停止移动时把数据保存到 localStorge, 初始化时从 localStorge 中获取 isNarrow
-                    isNarrow.value = newWidth < 200 ? true : false
+                    isNarrow.value = newWidth < breakPoint ? true : false
                     document.querySelector('.scalable').style.width = newWidth + 'px'
                 }
                 const stopDrag = () => {
@@ -112,12 +113,22 @@
                     startWidth.value = localStorage.getItem('scalable_width') || getScalableDivWidth()
                     // 初始化时从 localStorge 中获取 isNarrow
                     isNarrow.value = JSON.parse(localStorage.getItem('is_narrow')) || false
-                    // TODO:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                    console.log("属性 TODO:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ", isNarrow.value, localStorage.getItem('is_narrow') , Boolean(localStorage.getItem('is_narrow')))
+                    // 获取初始的宽度值
+                    // console.log("获取初始的宽度值属性 ", isNarrow.value, localStorage.getItem('is_narrow') , Boolean(localStorage.getItem('is_narrow')))
                     document.querySelector('.scalable').style.width = startWidth.value + 'px'
                     // console.log("加载后执行---> ", startWidth.value)
                     document.querySelector('.separator').addEventListener('mousedown', startDrag)
-
+                    // 加载后让 vue 观察 屏幕的尺寸, 如果小于一定的值, 就认为是移动端, 则需要增加对应的类
+                    
+                    // 监听 resize 事件, 实现响应式的布局
+                    window.onresize = function (){
+                        const screenWidth = document.body.clientWidth
+                        if(screenWidth < 768){
+                            isNarrow.value = true
+                        }else{
+                            isNarrow.value = false
+                        }
+                    }
                 })
 
                 onUnmounted(() => {
@@ -135,15 +146,14 @@
 
 <style lang="scss" scoped>
     // 定义变量
-    $color-fiord: #394263; // sidenav bg & dark text
-    $separator-width: 2px;
-
+    $color-sidebar-bg: #353f4f; // 侧边栏背景色
+    $separator-width: 4px;
+    $sidebar-min-width: 45px;
 
 
     .scalable {
         position: relative;
-        background-color: #eee;
-        min-width: 45px; // 往左边移动时的最小幅度, 再小就不能移动了
+        min-width: $sidebar-min-width; // 往左边移动时的最小幅度, 再小就不能移动了
         display: flex;
         justify-content: flex-start;
     }
@@ -152,7 +162,7 @@
 
         height: 100vh;
         width: 100%;
-        background-color: $color-fiord;
+        background-color: $color-sidebar-bg;
         // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
     }
 
@@ -163,8 +173,8 @@
         // left: 300px;
         width: $separator-width;
         height: 100%;
-        background-color: $color-fiord;
-        box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.35);
+        background-color: $color-sidebar-bg;
+        // box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.35);
         cursor: col-resize;
         display: flex;
         justify-content: center;
@@ -181,9 +191,9 @@
         }
     }
 
-    // @media screen and (max-width: 768px) and (min-width: 320px) {
-    //     .sidenav {
-    //         background-color: #fff;
-    //     }
-    // }
+    @media screen and (max-width: 768px) and (min-width: 320px) {
+        .scalable {
+            width: $sidebar-min-width !important;
+        }
+    }
 </style>

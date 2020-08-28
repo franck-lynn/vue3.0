@@ -7,7 +7,7 @@
 
             <component :is="item.children ? 'span': 'a'" :class="item.children ? 
                   'nav-list-title': 'nav-list-link'" :href="item.href">
-                <span v-if="item.icon" :class="['iconfont', item.icon]"></span>
+                <span v-if="item.icon || isDeepOne" :class="['iconfont', item.icon ? item.icon: isDeepOne? 'icon-all-fill': '']"></span>
                 <span :class="`nav-list-level-title-${deep}`"> {{item.title}} </span>
             </component>
 
@@ -54,7 +54,6 @@
             // const currentTarget = reactive({})
             const currentTarget = reactive({})
             const isShow = ref(false)
-
 
             //* 判断元素是否包含给定的类名
             const hasClassName = (element, className) => element.className.indexOf(className) !== -1
@@ -126,28 +125,18 @@
 </script>
 
 <style lang="scss" scoped>
-    /*
-        // Sass tils
-        $color-fiord: #394263; // sidenav bg & dark text
-        $color-white: #FFF; // card bg
-        $color-athens-gray: #EAEDF1; // content bg
-        $color-catskill-white: #F9FAFC; // top nav bg
-        $color-abbey: #777; // gray text
-        $color-mischka: #DADAE3; // light gray for menu icon
-        $color-java: #1BBAE1; // blue text
-        $color-mine-shaft: #333; // main section header bg
-        $color-zest: #e67e22; // document icon bg
-        $color-jungle-green: #27ae60; // calendar icon bg
-        $color-cinnabar: #e74c3c; // main icon bg, red
-        $color-amethyst: #af64cc; // main photo icon bg
-        $color-transparent: rgba(255, 255, 255, .5);
-        $color-alto: #D3D3D3;
-        $height-header: 50px;
-        $height-footer: 50px;
-        $width-sidenav: 240px;
-    */
-    $color-alto: #d3d3d3;
-    $color-fiord: #394263; // sidenav bg & dark text
+    $color-text: #fff;
+    $color-level-1: #65CEA7;
+    $font-size-level-1: 16px; // 一级菜单的字体大小
+    $color-separator-line: #aaa9a9;
+    $height-nav-list: 45px; // 图标, 链接, 标题的框高度
+    $width-level-1: 165px;
+    $width-offset-right-level-1: 45px; // 一级菜单绝对定位时向右偏移的距离
+    $width-little-triangle: 5px;
+    $offset-left-little-triangle: 10px;
+    $color-sub-list: #353f4f;
+
+    $sidebar-min-width: 45px;
 
     * {
         box-sizing: border-box;
@@ -170,29 +159,27 @@
         width: 100%; // 数组的第一级, [[{}, {}], [{}, {}]], 表示里面的第级数组
         padding: 0;
         margin: 0;
-        color: $color-alto;
+        color: $color-text;
         text-transform: capitalize; // 首字母大写
         display: flex;
         flex-direction: column;
         list-style-type: none;
-        // background-color: darken($color-fiord, 10%);
         visibility: visible;
         overflow: hidden;
-        transition: all .4s ease-in-out;
-        font-size: 18px;
+        transition: all .2s ease-in-out;
+        font-size: $font-size-level-1;
 
         &+.nav-list::before {
             content: ''; //* 分割线, 按照数组分割的线, 在第1级的两个数组中间进行分割
             display: block;
             width: 94%;
-            border: 1px solid #aaa9a9;
+            border-bottom: 1px solid $color-separator-line;
             align-self: center;
             margin: 6px 0;
         }
 
         // 开始时菜单都是收缩的, 点击到哪个菜单, 哪个菜单的下级才打开
         //! 一级数组部分结束
-        
         .nav-items {
             .sub-list {
                 width: 100%;
@@ -201,10 +188,10 @@
                 overflow: hidden; // 代替display 实现过渡效果
                 max-height: 0; // 代替display 实现过渡效果
                 // display: none; // 是 nav-item 上的菜单
-                transition: all .4s linear; // 代替display 实现过渡效果
+                transition: all .2s linear; // 代替display 实现过渡效果
 
                 .nav-sub-items {
-                    font-size: 16px !important;
+                    font-size: $font-size-level-1 - 2px !important;
 
                     &:hover {
                         background-color: rgba(255, 255, 255, .1);
@@ -230,8 +217,8 @@
             .nav-list-title {
                 display: flex;
                 align-items: center;
-                height: 45px; // 图标, 链接, 标题的框高度
-                color: $color-alto;
+                height: $height-nav-list; // 图标, 链接, 标题的框高度
+                color: $color-text;
                 cursor: pointer;
                 border-left: 2px solid transparent;
                 //! 这里设置一个过渡效果
@@ -239,10 +226,10 @@
 
                 &:hover {
                     background-color: rgba(255, 255, 255, .1);
+                    color: cyan;
                     border-left: 2px solid cyan;
                 }
             }
-
 
             &.pulldown-show {
 
@@ -268,42 +255,18 @@
             }
 
             //? ============================================================
-
         }
-        
+
         //? ========================变窄时开始========================
         // 当 nav-list 同级的, 也就是一级菜单 存在 narrow-to-region 时, 也就是左侧边栏变窄了
         // 还要满足 数组处于激活状态.
         &.narrow-to-region {
             .nav-list-level-title-1 {
                 display: none;
-                // 在变窄的状态下, 一级菜单的标题都是隐藏的, 只显示一级菜单的图标
-                // position: absolute; // 一级菜单的标题
-                // max-height: 120px;
-                // overflow: hidden;
-                // height: auto;
-                // visibility: hidden;
-                // display: flex;
-                // // display: none; // nav-items 下的文字和伪类都隐藏
-                // background-color: green;
-                // left: 45px;
-                // height: 45px;
-                // min-width: 120px;
-                // align-items: center;
-                // width: 165px; // 与下级的 .sub-list 宽度相等
-                // transition: all 1s ease-in-out;
-                // margin-left: 0 !important;
             }
 
             .nav-list-title:after {
                 display: none;
-                // 第1级菜单后的三角符号 也是隐藏的
-                // position: absolute;
-                // float: right;
-                // left: 190px;
-                // transition: all .2s;
-                // justify-self: flex-end;
-                // display: none;
             }
 
             .sub-list {
@@ -314,181 +277,60 @@
                 &:hover {
                     .nav-list-level-title-1 {
                         position: absolute;
-                        background-color: green;
+                        background-color: $color-level-1;
+                        border-radius: 1px 1px 0 0;
                         display: flex;
                         align-items: center;
-                        left: 40px;
-                        height: 45px;
-                        width: 165px; // 与下级的 .sub-list 宽度相等
-                        transition: all 1s ease-in-out;
+                        left: $width-offset-right-level-1;
+                        height: $height-nav-list;
+                        width: $width-level-1; // 与下级的 .sub-list 宽度相等
+                        transition: all 0.2s ease-in-out;
                         margin-left: 0 !important;
-                        padding: 10px;
+                        padding-left: $offset-left-little-triangle;
+
+                        &::before {
+                            content: '';
+                            width: 0;
+                            height: 0;
+                            font-size: 0;
+                            line-height: 0;
+                            border-width: $width-little-triangle;
+                            border-style: solid dashed dashed dashed;
+                            border-color: transparent $color-level-1 transparent transparent;
+                            position: absolute;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            // top: 10px;
+                            left: -$offset-left-little-triangle;
+                        }
                     }
 
                     .nav-list-title:after {
                         display: block;
                         position: absolute;
-                        left: 190px;
+                        left: $width-offset-right-level-1 + $width-level-1 - $font-size-level-1;
                     }
 
                     >.sub-list {
-                        display: block ;
+                        display: block;
                         // visibility: visible;
                         position: absolute;
-                        background-color: green;
-                        left: 40px; // 不能设置高度
-                        width: 165px; // 与下级的 .sub-list 宽度相等
-                        .pulldown-show{
+                        background-color: $color-sub-list;
+                        left: $width-offset-right-level-1; // 不能设置高度
+                        width: $width-level-1; // 与下级的 .sub-list 宽度相等
+                        border-radius: 0 0 1px 1px;
+
+                        .pulldown-show {
                             >.sub-list {
-                                 display: block ;
+                                display: block;
                             }
                         }
                     }
-
                 }
-
-                // &.pulldown-show {
-
-                //     >.sub-list {
-                //         display: block;
-                //         position: absolute;
-                //         background-color: green;
-                //         left: 40px;
-                //         height: 45px;
-                //         width: 165px; // 与下级的 .sub-list 宽度相等
-                //     }
-
-                //     .pulldown-show {
-                //         // display: block;
-                //         // position: absolute;
-                //         // background-color: green;
-                //         // left: 40px;
-                //         // height: 45px;
-
-                //         // width: 165px; // 与下级的 .sub-list 宽度相等
-                //         >.sub-list {
-                //             display: block;
-                //             position: absolute;
-                //             background-color: green;
-                //             left: 40px;
-                //             height: 45px;
-                //             width: 165px; // 与下级的 .sub-list 宽度相等
-                //         }
-                //     }
-
-
-
-                // }
-
-
-
-
-
             }
-
-
-
-
-
-            // &.nav-list-active {
-            //     .nav-items {
-
-            //         // display: flex;
-            //         // justify-content: space-between;
-            //         >.sub-list {
-            //             // border: 1px solid red;
-            //             // visibility: hidden; // 初始状态 子菜单是隐藏的, 悬停时才给予变化 // 已注释掉
-            //             // overflow: hidden; // 刚开始本来就是隐藏的, 在大屏时已经设置
-            //             // max-height: 0; // 已注释掉
-            //             // height: auto;
-            //             // visibility: visible;
-
-            //             position: absolute; // 绝对定位需要
-            //             left: 45px;
-            //             // display: flex;
-            //             // flex-direction: column;
-            //             // justify-content: flex-start;
-            //             // align-items: center;
-            //             // min-width: 120px;
-            //             background-color: rgb(124, 0, 128);
-            //         }
-
-            //         // >.nav-list-title:after {
-            //         //     // 第1级菜单后的三角符号
-            //         //     position: absolute;
-            //         //     // float: right;
-            //         //     left: 190px;
-            //         //     transition: all .2s;
-            //         //     // justify-self: flex-end;
-            //         //     // display: none;
-            //         // }
-
-            //         //? ===========悬停一级菜单时开始=======
-            //         &:hover {
-            //             >.nav-list-title::after {
-            //                 // 一级菜单后面的三角箭头
-            //                 display: block;
-            //             }
-
-            //             .nav-list-level-title-1 {
-            //                 visibility: visible;
-            //             }
-
-
-            //             // 在 nav-item 上悬停时, 显示不同的 a或span 标签颜色, 实际上时a 标签内部图标的颜色,文字和伪图标都隐藏了
-            //             .nav-list-link,
-            //             .nav-list-title {
-            //                 color: aqua;
-            //             }
-
-            //         }
-
-            //         //? ===========悬停一级菜单时结束=======
-
-
-
-
-
-
-
-
-            //     }
-            // }
 
             //? ========================变窄时结束========================
         }
-
-        //! 这个实现的是 打开一个一级菜单, 另外的关闭, 如果不需要关闭, 注释掉 &.nav-list-active
-        //! 打开上面 &.pulldown-show, 如果是为了更加美观
-        //! 可以把 这个组件的父组件中 handleCurrentTag 和 
-        //! :class="{'nav-list-active': currentTag === item[0].title}"
-        //! 内容也可以去掉
-        //? ============================================================
-        // &.nav-list-active {
-        //     .nav-items {
-
-        //         // 如果根类是 active, 才进行显示
-        //         &.pulldown-show {
-        //             >.nav-list-title::after {
-        //                 transform: rotate(315deg);
-        //             }
-
-        //             >.sub-list {
-        //                 display: block;
-        //             }
-
-        //             .pulldown-show {
-        //                 >.nav-list-title::after {
-        //                     transform: rotate(315deg);
-        //                 }
-
-        //                 >.sub-list {
-        //                     display: block;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        //? ============================================================
     }
 </style>

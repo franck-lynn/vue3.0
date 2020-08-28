@@ -9,7 +9,7 @@
         <!-- <div class="separator"><i></i><i></i></div>
         </div> -->
         <sidebar-list></sidebar-list>
-
+         
 
 
         <div class="main">
@@ -37,10 +37,9 @@
     .box-resize-demo {
         height: 100vh;
         display: flex;
-
         -webkit-user-select: none;
         user-select: none;
-
+        
         .main {
             margin: 20px;
             background-color: #eee;
@@ -48,13 +47,14 @@
         }
     }
 
-//    @media screen and (max-width: 768px) and (min-width: 320px) {
-//         .box-resize-demo {
-//             .main {
-//                 margin: 20px;
-//                 background-color: red;
-//                 flex: 1
-//             }
-//         }
-//     }
+   @media screen and (max-width: 768px) and (min-width: 320px) {
+        // .box-resize-demo {
+        //     .main {
+        //         width: 100%;
+        //         margin: 20px;
+        //         // background-color: red;
+        //         flex: 1
+        //     }
+        // }
+    }
 </style>
