@@ -1,16 +1,18 @@
 <template>
-    <ul :class="[isDeepOne ? 'nav-list' : 'sub-list']">
+    <ul :class="[isDeepOne ? 'nav-list' : 'sub-list', {'narrow-to-region': isNarrow}]">
 
-        <li v-for="(item, index) in items" :key="index" :class="[isDeepOne? 'nav-items': 'nav-sub-items', `nav-list__level-${deep}`, 
-          {'pulldown-open': currentTarget.title === item.title, 
-          'pulldown-show': currentTarget.title === item.title ? isShow: ''}]" @click="handleCurrentTarget">
+        <li v-for="(item, index) in items" :key="index" :class="[isDeepOne? 'nav-items': 'nav-sub-items', 
+              `nav-list__level-${deep}`, {'pulldown-active': isCurrentTarget(currentTarget, item),
+              'pulldown-show': toggleShow(currentTarget, item)}]" @click="handleCurrentTarget">
 
-            <component :is="item.children ? 'span': 'a'" :class="item.children ? 'nav-list-title': 'nav-list-link'" :href="item.href">
-                <span v-if="item.icon" :class="['iconfont', item.icon]"></span>
+            <component :is="item.children ? 'span': 'a'" :class="item.children ? 
+                  'nav-list-title': 'nav-list-link'" :href="item.href">
+                <span v-if="item.icon || isDeepOne" :class="['iconfont', item.icon ? item.icon: isDeepOne? 'icon-all-fill': '']"></span>
                 <span :class="`nav-list-level-title-${deep}`"> {{item.title}} </span>
             </component>
 
             <sidebar-items v-if=item.children :items="item.children" :deep=deep+1></sidebar-items>
+
         </li>
 
     </ul>
@@ -39,23 +41,65 @@
                  [{ con: '🚩', title: '一级3', children: [{ title: '二级C' }, { title: '二级D' }] }]
           ]
     */
-    import { defineComponent, computed, onMounted, ref } from 'vue'
+    import { defineComponent, computed, onMounted, ref, reactive } from 'vue'
     export default defineComponent({
         name: 'sidebar-items',
         props: {
             deep: { type: Number, default: 1 },
-            items: { type: Array, default: () => [] }
+            items: { type: Array, default: () => [] },
+            isNarrow: { type: Boolean, default: false }
         },
-        setup(props) {
+        setup(props, ctx) {
             const isDeepOne = computed(() => props.deep && props.deep === 1)
-            const currentTarget = ref({})
+            // const currentTarget = reactive({})
+            const currentTarget = reactive({})
             const isShow = ref(false)
+
+            //* 判断元素是否包含给定的类名
+            const hasClassName = (element, className) => element.className.indexOf(className) !== -1
+            //* 判断父元素 是否包含子元素.
+            const hasChildName = (parent, childName) => {
+                // parent 是一个数组, 如果是 HTMLCollection 对象, 可以用
+                // es6 的方法 Array.from() 转成一个数组
+                return parent.some((element) => hasClassName(element, childName))
+            }
+            //* 判断是不是当前点击的元素
+            const isCurrentTarget = (currentTarget, item) => {
+                // 是当前组件, 设置到 localStorge 中去
+                // console.log(currentTarget.value)
+                return currentTarget ? currentTarget.title === item.title : false
+            }
+            //* 切换下拉菜单状态
+            const toggleShow = (currentTarget, item) => {
+                // 只有激活状态下才能改变下拉与否的状态, 别忘了加 .value
+                return isCurrentTarget(currentTarget, item) ? isShow.value : ''
+            }
+
             const handleCurrentTarget = (e) => {
                 e.stopPropagation() // 阻止事件传播
-                currentTarget.value.title = e.currentTarget.querySelector('span[class^="nav-list-level-title"]').innerHTML
-                console.log(currentTarget.value.title)
-                isShow.value = !isShow.value
+                e.preventDefault()
+                //? 要判断 下面 有 sub-list 的时候才添加 show 类, 没有下拉菜单, 就不需要这个切换类 show
+                //? 但是 , active 类还是需要的, 表示当前的点击处于激活状态
+                const currentChildrenArray = Array.from(e.currentTarget.children)
+                const hasSublist = hasChildName(currentChildrenArray, 'sub-list')
+                currentTarget.title = e.currentTarget.querySelector(`span[class^="nav-list-level-title-${props.deep}"]`).innerHTML
+                // console.log(currentTarget.title)
+
+                if (!hasSublist) {
+                    // 没有 sub-list 类, 也就不需要 show 类, 但是要 active 类
+                    isShow.value = false
+                } else {
+                    isShow.value = !isShow.value
+                }
+                // 鼠标点击时保存状态
+                localStorage.setItem('current_target', currentTarget.title)
+                localStorage.setItem('is_show', isShow.value)
+                // 发射子组件的点击事件给父组件, 父组件根据这个点击判断是哪个一级数组被激活
+                ctx.emit('currentTag', e)
             }
+            // watch(currentTarget, (n, o) => {
+            //     console.log(`新值是: ${n.title}, 旧值---> ${o.title}`)
+            // })
             onMounted(() => {
                 document.querySelectorAll('span[class^="nav-list-level-title"]').forEach(item => {
                     // 获取下面的每个子类, 从类名中获取数字, 这个数字代表的是层级
@@ -70,39 +114,32 @@
                         item.previousSibling.style.marginLeft = 10 * level + 'px'
                     }
                 })
+                // 加载之后从 localStorge 中获取上次退出时保存的 当前打开的组件值
+                currentTarget.title = localStorage.getItem('current_target')
+                isShow.value = localStorage.getItem('is_show')
+
             })
-            return { isDeepOne, currentTarget, isShow, handleCurrentTarget }
+            return { isDeepOne, currentTarget, isShow, isCurrentTarget, toggleShow, handleCurrentTarget }
         }
     })
 </script>
 
 <style lang="scss" scoped>
-    /*
-        // Sass tils
-        $color-fiord: #394263; // sidenav bg & dark text
-        $color-white: #FFF; // card bg
-        $color-athens-gray: #EAEDF1; // content bg
-        $color-catskill-white: #F9FAFC; // top nav bg
-        $color-abbey: #777; // gray text
-        $color-mischka: #DADAE3; // light gray for menu icon
-        $color-java: #1BBAE1; // blue text
-        $color-mine-shaft: #333; // main section header bg
-        $color-zest: #e67e22; // document icon bg
-        $color-jungle-green: #27ae60; // calendar icon bg
-        $color-cinnabar: #e74c3c; // main icon bg, red
-        $color-amethyst: #af64cc; // main photo icon bg
-        $color-transparent: rgba(255, 255, 255, .5);
-        $color-alto: #D3D3D3;
-        $height-header: 50px;
-        $height-footer: 50px;
-        $width-sidenav: 240px;
-    */
-    $color-alto: #d3d3d3;
-    $color-fiord: #394263; // sidenav bg & dark text
+    $color-text: #fff;
+    $color-level-1: #65CEA7;
+    $font-size-level-1: 16px; // 一级菜单的字体大小
+    $color-separator-line: #aaa9a9;
+    $height-nav-list: 45px; // 图标, 链接, 标题的框高度
+    $width-level-1: 165px;
+    $width-offset-right-level-1: 45px; // 一级菜单绝对定位时向右偏移的距离
+    $width-little-triangle: 5px;
+    $offset-left-little-triangle: 10px;
+    $color-sub-list: #353f4f;
+
+    $sidebar-min-width: 45px;
 
     * {
         box-sizing: border-box;
-
     }
 
     .nav-list {
@@ -122,38 +159,50 @@
         width: 100%; // 数组的第一级, [[{}, {}], [{}, {}]], 表示里面的第级数组
         padding: 0;
         margin: 0;
-        color: $color-alto;
+        color: $color-text;
         text-transform: capitalize; // 首字母大写
         display: flex;
         flex-direction: column;
         list-style-type: none;
-        // background-color: darken($color-fiord, 10%);
         visibility: visible;
         overflow: hidden;
-        transition: all .4s ease-in-out;
-        font-size: 18px;
-        // &:last-child { 
-        //     background-color: red; // 例如可以设置第一级的哪一个数组, 示例数据data 中的的 一级3所在数组
-        // }
+        transition: all .2s ease-in-out;
+        font-size: $font-size-level-1;
 
         &+.nav-list::before {
             content: ''; //* 分割线, 按照数组分割的线, 在第1级的两个数组中间进行分割
             display: block;
             width: 94%;
-            border: 1px solid #aaa9a9;
+            border-bottom: 1px solid $color-separator-line;
             align-self: center;
             margin: 6px 0;
-
         }
 
         // 开始时菜单都是收缩的, 点击到哪个菜单, 哪个菜单的下级才打开
         //! 一级数组部分结束
         .nav-items {
+            .sub-list {
+                width: 100%;
+                //? 01. 刚开始时 nav-items 下的 sub-list 都是隐藏的
+                visibility: visible; // 代替display 实现过渡效果
+                overflow: hidden; // 代替display 实现过渡效果
+                max-height: 0; // 代替display 实现过渡效果
+                // display: none; // 是 nav-item 上的菜单
+                transition: all .2s linear; // 代替display 实现过渡效果
+
+                .nav-sub-items {
+                    font-size: $font-size-level-1 - 2px !important;
+
+                    &:hover {
+                        background-color: rgba(255, 255, 255, .1);
+                    }
+                }
+            }
 
             //* 有下级菜单的 3列中最后一列靠右显示, > 的箭头符号
             .nav-list-title::after {
                 margin-left: auto;
-                margin-right: 1rem;
+                margin-right: 0.8rem;
                 content: ""; // 有下级菜单, 添加右向符号
                 height: 6px;
                 width: 6px;
@@ -163,55 +212,24 @@
                 transition: all .2s;
             }
 
-
-            // >.nav-list-title{
-            //     transition: all 2s ease-in-out;
-            // }
-
-
             //! 数组中的项目标题 悬停时左侧加上绿色显示
             .nav-list-link,
             .nav-list-title {
                 display: flex;
                 align-items: center;
-                height: 45px; // 图标, 链接, 标题的框高度
-                color: $color-alto;
+                height: $height-nav-list; // 图标, 链接, 标题的框高度
+                color: $color-text;
                 cursor: pointer;
                 border-left: 2px solid transparent;
-
                 //! 这里设置一个过渡效果
-                // transition: all 1s ease-in-out;
-                
-                
+                transition: all 0.2s ease-in-out;
+
                 &:hover {
                     background-color: rgba(255, 255, 255, .1);
+                    color: cyan;
                     border-left: 2px solid cyan;
                 }
             }
-
-            //? 02. 当在 nav-items 下的 nav-list-title 悬停时, 显示直接子元素
-            //? ============================================================
-            // &:hover {
-            // //* 旋转 > 符号
-            //     >.nav-list-title::after {
-            //         transform: rotate(315deg);
-            //     }
-
-            //     &>.sub-list {
-            //         display: block;
-            //     }
-            // }
-
-            // .nav-sub-items:hover {
-            //     >.nav-list-title::after {
-            //         transform: rotate(315deg);
-            //     }
-
-            //     >.sub-list {
-            //         display: block; //? 03. 直接的子类显示, 要加 >
-            //     }
-            // }
-
 
             &.pulldown-show {
 
@@ -220,47 +238,99 @@
                 }
 
                 >.sub-list {
-
-                    display: block;
+                    // display: block;
+                    max-height: 200px; // 代替display 实现过渡效果
                 }
 
                 .pulldown-show {
-
                     >.nav-list-title::after {
                         transform: rotate(315deg);
                     }
 
                     >.sub-list {
-
-                        display: block;
+                        max-height: 200px; // 代替display 实现过渡效果
+                        // display: block;
                     }
                 }
             }
 
             //? ============================================================
+        }
+
+        //? ========================变窄时开始========================
+        // 当 nav-list 同级的, 也就是一级菜单 存在 narrow-to-region 时, 也就是左侧边栏变窄了
+        // 还要满足 数组处于激活状态.
+        &.narrow-to-region {
+            .nav-list-level-title-1 {
+                display: none;
+            }
+
+            .nav-list-title:after {
+                display: none;
+            }
 
             .sub-list {
+                display: none; // 所有一级菜单后面的子菜单都是隐藏的
+            }
 
-                width: 100%;
-                //? 01. 刚开始时 nav-items 下的 sub-list 都是隐藏的
-                display: none; // 是 nav-item 上的菜单
+            .nav-items {
+                &:hover {
+                    .nav-list-level-title-1 {
+                        position: absolute;
+                        background-color: $color-level-1;
+                        border-radius: 1px 1px 0 0;
+                        display: flex;
+                        align-items: center;
+                        left: $width-offset-right-level-1;
+                        height: $height-nav-list;
+                        width: $width-level-1; // 与下级的 .sub-list 宽度相等
+                        transition: all 0.2s ease-in-out;
+                        margin-left: 0 !important;
+                        padding-left: $offset-left-little-triangle;
 
-                .nav-sub-items {
-                    font-size: 16px !important;
+                        &::before {
+                            content: '';
+                            width: 0;
+                            height: 0;
+                            font-size: 0;
+                            line-height: 0;
+                            border-width: $width-little-triangle;
+                            border-style: dashed solid dashed dashed;
+                            border-color: transparent $color-level-1 transparent transparent;
+                            position: absolute;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            // top: 10px;
+                            left: -$offset-left-little-triangle;
+                        }
+                    }
 
-                    &:hover {
-                        background-color: rgba(255, 255, 255, .1);
+                    .nav-list-title:after {
+                        display: block;
+                        position: absolute;
+                        left: $width-offset-right-level-1 + $width-level-1 - $font-size-level-1;
+                    }
+
+                    >.sub-list {
+                        display: block;
+                        // visibility: visible;
+                        position: absolute;
+                        background-color: $color-sub-list;
+                        left: $width-offset-right-level-1; // 不能设置高度
+                        width: $width-level-1; // 与下级的 .sub-list 宽度相等
+                        border-radius: 0 0 1px 1px;
+
+                        .pulldown-show {
+                            >.sub-list {
+                                display: block;
+                            }
+                        }
                     }
                 }
             }
 
-
-
-
-
-
-
+            //? ========================变窄时结束========================
         }
-
     }
 </style>

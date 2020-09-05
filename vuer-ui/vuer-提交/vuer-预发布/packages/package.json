@@ -1,0 +1,14 @@
+{
+  "name": "@franck-lynn/vuer-ui",
+  "version": "0.0.5",
+  "description": "测试发布,这是用 vue3.0 做的一个 ui 插件, 准备发布到 npm 上",
+  "main": "index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "webpack -r esm",
+    "dev": "webpack-dev-server -r esm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

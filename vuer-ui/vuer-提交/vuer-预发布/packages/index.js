@@ -1,0 +1,1 @@
+export { vuerPlugin } from "./components/vuer-plugin"

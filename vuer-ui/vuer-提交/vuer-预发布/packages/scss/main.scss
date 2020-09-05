@@ -1,0 +1,6 @@
+/* 导入全局变量文件 global.variable.scss */
+// 这2种写法都是可以的
+// @import './global.variable.scss';
+@import 'global.variable.scss';
+
+// $prefix: 'vuer-';

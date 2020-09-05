@@ -199,7 +199,7 @@
                 }
             }
 
-            //* 有下级菜单的 3列中最后一列靠右显示, > 的箭头符号
+            //* 有下级菜单的 3列中 最后一列靠右显示, > 的箭头符号
             .nav-list-title::after {
                 margin-left: auto;
                 margin-right: 0.8rem;
@@ -274,6 +274,7 @@
             }
 
             .nav-items {
+
                 &:hover {
                     .nav-list-level-title-1 {
                         position: absolute;
@@ -295,7 +296,7 @@
                             font-size: 0;
                             line-height: 0;
                             border-width: $width-little-triangle;
-                            border-style: solid dashed dashed dashed;
+                            border-style: dashed solid dashed dashed;
                             border-color: transparent $color-level-1 transparent transparent;
                             position: absolute;
                             display: flex;
@@ -307,9 +308,12 @@
                     }
 
                     .nav-list-title:after {
+                        // 变窄时悬停显示第1级菜单后面的 三角符号
                         display: block;
+                        // visibility: visible;
                         position: absolute;
-                        left: $width-offset-right-level-1 + $width-level-1 - $font-size-level-1;
+                        // 45px + 165px -16px  -8px = 
+                        left: $width-offset-right-level-1 + $width-level-1 - $font-size-level-1 - 8px;
                     }
 
                     >.sub-list {
@@ -320,6 +324,18 @@
                         left: $width-offset-right-level-1; // 不能设置高度
                         width: $width-level-1; // 与下级的 .sub-list 宽度相等
                         border-radius: 0 0 1px 1px;
+
+
+                        .nav-list-title:after {
+                            // 变窄时悬停显示2级以后等菜单后面的 三角符号
+                            display: block;
+                            position: absolute;
+                            // left: 140px;
+                            right: 2px; // 设置距离右边距离2px刚刚好, 不清楚怎么计算
+                        }
+
+
+
 
                         .pulldown-show {
                             >.sub-list {
