@@ -17,11 +17,12 @@ const config = {
         rules: [
             { test: /\.vue$/, use: 'vue-loader' },
             { test: /\.css$/, use: ["style-loader", 'css-loader'] },
-            // { test: /\.scss$/, use: ["style-loader", 'css-loader', 'sass-loader']},
+            // { test: /\.scss$/, use: ["style-loader", 'css-loader', { loader: 'sass-loader', options: { implementation: require("sass"), sassOptions: { fiber: false } } }]},
             {
                 test: /\.scss$/,
                 use: [
-                    'style-loader', 'css-loader', 'sass-loader', {
+                    'style-loader', 'css-loader', 'sass-loader', 
+                    {
                         loader: 'sass-resources-loader',
                         options: {
                             // 定义全局的css, 在main.scss中引入了全局变量

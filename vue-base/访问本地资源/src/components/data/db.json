@@ -1,0 +1,137 @@
+{
+    "contracts": [
+        {
+            "id": 1,
+            "customer": "杭州汽轮机股份有限公司",
+            "contracts_no": "HTHZLRY201010-1636",
+            "contract_state": "delivering",
+            "details": [
+                {
+                    "item": "1",
+                    "description": "刀片",
+                    "catalog_number": "AXMT170512PEER-G ACK200",
+                    "price": 35,
+                    "amount": 3500,
+                    "qty": 100,
+                    "remark": "库存<合同数量, 克隆"
+                },
+                {
+                    "item": "2",
+                    "description": "精镗头",
+                    "catalog_number": "EWN68-150CKB6",
+                    "price": 5600,
+                    "amount": 5600,
+                    "qty": 1,
+                    "remark": "库存<=0, 不能移动"
+                },
+                {
+                    "item": "3",
+                    "description": "刀片",
+                    "catalog_number": "TPGW080202 H1ZX",
+                    "price": 29.3,
+                    "amount": 2930,
+                    "qty": 100,
+                    "remark": "库存=合同数量, 移动"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "customer": "杭州汽轮机股份有限公司",
+            "contracts_no": "HTHZLRY201005-1632",
+            "contract_state": "delivering",
+            "details": [
+                {
+                    "item": "1",
+                    "description": "刀片",
+                    "catalog_number": "AXMT170512PEER-G ACK200",
+                    "price": 35,
+                    "amount": 3500,
+                    "qty": 100,
+                    "remark": "重复订货"
+                },
+                {
+                    "item": "2",
+                    "description": "车刀杆",
+                    "catalog_number": "P95R-4040-280-C19",
+                    "price": 374,
+                    "amount": 374,
+                    "qty": 1,
+                    "remark": "重复订货"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "customer": "杭州汽轮机股份有限公司",
+            "contracts_no": "HTHZLRY200925-1621",
+            "contract_state": "delivered",
+            "details": [
+                {
+                    "item": "1",
+                    "description": "刀片",
+                    "catalog_number": "AXMT170512PEER-G ACK200",
+                    "price": 35,
+                    "amount": 3500,
+                    "qty": 100,
+                    "remark": "已交货"
+                },
+                {
+                    "item": "2",
+                    "description": "车刀杆",
+                    "catalog_number": "P95R-4040-280-C19",
+                    "price": 374,
+                    "amount": 374,
+                    "qty": 1,
+                    "remark": "已交货"
+                }
+            ]
+        }
+    ],
+    "stocks": [
+        {
+            "id": 1,
+            "item": 1,
+            "description": "刀片",
+            "catalog_number": "AXMT170512PEER-G ACK200",
+            "qty": 50
+        },
+        {
+            "id": 2,
+            "item": 1,
+            "description": "刀片",
+            "catalog_number": "TPGW080202 H1ZX",
+            "qty": 100
+        }
+    ],
+    "deliver": [
+        {
+            "id": 1,
+            "contracts_no": "HTHZLRY201010-1636",
+            "times": 1,
+            "date": "2020-10-09",
+            "details": [
+                {
+                    "item": "1",
+                    "description": "刀片",
+                    "catalog_number": "AXMT170512PEER-G ACK200",
+                    "qty": 20
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "contracts_no": "HTHZLRY201010-1636",
+            "times": 2,
+            "date": "2020-10-12",
+            "details": [
+                {
+                    "item": "1",
+                    "description": "刀片",
+                    "catalog_number": "AXMT170512PEER-G ACK200",
+                    "qty": 10
+                }
+            ]
+        }
+    ]
+}

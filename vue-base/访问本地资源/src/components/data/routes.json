@@ -1,0 +1,4 @@
+{
+    "/contracts/:contracts_no": "/?contracts_no=:contracts_no",
+    "/:id": "/contracts/:id"
+}

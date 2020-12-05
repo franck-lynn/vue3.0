@@ -1,0 +1,11 @@
+{
+    "name": "vue3.0-init",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "start": "json-server --watch ./src/components/data/db.json --routes ./src/components/data/routes.json",
+        "build": "webpack -r esm",
+        "dev": "webpack-dev-server -r esm",
+        "test": "npm run start | npm run dev"
+    }
+}

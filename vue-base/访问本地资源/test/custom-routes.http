@@ -1,0 +1,6 @@
+###
+# 
+GET http://localhost:3000/contracts?contracts_no=HTHZLRY201010-1636 HTTP/1.1
+###
+# 
+GET http://localhost:3000/contracts HTTP/1.1

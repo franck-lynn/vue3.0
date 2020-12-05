@@ -1,0 +1,13 @@
+# https://docs.breword.com/typicode-json-server#plural-routes
+# https://www.jianshu.com/p/bdbbd3314cf3
+### * 自定义路由 {"/contracts/:contracts_no": "/contracts?contracts_no=:contracts_no"}
+# 不配置路由时下面这句是有效的
+GET  http://localhost:3000/contracts?contracts_no=HTHZLRY201010-1636  HTTP/1.1
+
+### { "/contracts/:contracts_no": "/?contracts_no=:contracts_no" }
+# 配置路由时, 要把 ? 前的 contracts 去掉
+GET  http://localhost:3000/contracts/HTHZLRY201010-1636  HTTP/1.1
+
+### * 自定义路由 {"/:id": "/contracts/:id"}
+GET  http://localhost:3000/3 HTTP/1.1
+

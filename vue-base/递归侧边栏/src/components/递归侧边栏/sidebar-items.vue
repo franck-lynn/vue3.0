@@ -1,4 +1,5 @@
 <template>
+   
     <ul :class="[isDeepOne ? 'nav-list' : 'sub-list', {'narrow-to-region': isNarrow}]">
 
         <li v-for="(item, index) in items" :key="index" :class="[isDeepOne? 'nav-items': 'nav-sub-items', 

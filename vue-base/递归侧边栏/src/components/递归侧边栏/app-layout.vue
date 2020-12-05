@@ -20,7 +20,7 @@
                 <div class="content">右边内容 welcome to </div>
                 <div class="content">右边内容 welcome to </div>
                 <div class="content">右边内容 welcome to </div>
-
+                
 
             </section>
             <sticky-footer> </sticky-footer>
@@ -37,8 +37,17 @@
             // 获取整个页面的宽度
             onMounted(() => {
                 const screenWidth = window.getComputedStyle(document.querySelector('.box-resize-demo')).width
-                console.log(screenWidth)
+                console.log("获取整个页面的宽度: ", screenWidth)
             })
+            
+            // app-layout 也要读取 components 目录下的文件, 作为 data 数据传给 sidebar-list
+            // sidebar-list 的 data 作为属性
+            const files = require.context('@/components/', true, /\.vue$/)
+            files.keys().forEach(key => {
+                console.log("读取到的文件", key)
+            })
+            
+            
             return {}
         }
     })
