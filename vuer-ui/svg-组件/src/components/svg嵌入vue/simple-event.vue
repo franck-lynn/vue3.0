@@ -1,8 +1,8 @@
 <template>
-    <!-- <svg width="200" height="200">
+    <svg width="200" height="200">
         <circle :cx="cx" :cy="cy" :r="r"></circle>
-        <path d="M 100 140 A 40 40 1 1 -100 100" stroke="lime/>
-    </svg> -->
+        <path d="M 100 140 A 40 40 1 1 -100 100" stroke="lime"/>
+    </svg>
 </template>
 
 <script>
