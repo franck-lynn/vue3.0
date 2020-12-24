@@ -1,0 +1,19 @@
+{
+  // for japanese
+  message:{
+    hello: "hello world!"
+  },
+  msg: 'こんにちは',
+  named: '{msg} 日文',
+  list: '{0} 日文',
+  literal: "{'こんにちは'} 日文!",
+  the_world: 'ザ・ワールド！',
+  dio: 'ディオ 日文dio:',
+  linked: '@:dio @:the_world 日文！！！！',
+  car: 'car | cars',
+  apple: 'no apples | one apple | {count} apples',
+  banana: 'no bananas | {n} banana | {n} bananas',
+  
+  // 时间日期格式
+  current: 'current Datetime'
+}

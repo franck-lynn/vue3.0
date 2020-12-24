@@ -115,7 +115,7 @@
                 text-align: right;
                 box-sizing: border-box;
 
-                ::v-deep .#{$prefix}button:first-child {
+                :v-deep .#{$prefix}button:first-child {
                     margin-right: 20px;
                 }
             }

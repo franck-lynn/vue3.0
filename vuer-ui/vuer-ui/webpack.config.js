@@ -16,16 +16,14 @@ const config = {
     module: {
         rules: [
             { test: /\.vue$/, use: 'vue-loader' },
-            { test: /\.css$/, use: ["style-loader", 'css-loader'] },
-            // { test: /\.scss$/, use: ["style-loader", 'css-loader', { loader: 'sass-loader', options: { implementation: require("sass"), sassOptions: { fiber: false } } }]},
             {
-                test: /\.scss$/,
+                test: /\.(sc|sa|c)ss$/,
                 use: [
-                    'style-loader', 'css-loader', 'sass-loader', 
+                    "style-loader", 'css-loader', { loader: 'sass-loader', options: { implementation: require("sass"), sassOptions: { fiber: false } } },
                     {
                         loader: 'sass-resources-loader',
                         options: {
-                            // 定义全局的css, 在main.scss中引入了全局变量
+                            // 导入 veriable, mixins等
                             resources: ['./src/scss/main.scss']
                         }
                     }
@@ -49,7 +47,7 @@ const config = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: "vuer-ui",
+            title: "vue-base",
             template: './public/index.html',
             favicon: "./assets/imgs/Jupiter.ico",
             inject: true
@@ -57,11 +55,13 @@ const config = {
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin(),
         new webpack.HotModuleReplacementPlugin(), // 使用webpack内置插件HMR
+        // new webpack.IgnorePlugin(/fs/) // 无法解决 require.context 与 node fs 冲突
         new webpack.DefinePlugin({
             // vue3.0 rc-3 以后, 推荐显式注明构建模式, 这里是开发时的配置, 生成模式重新配置
             "__VUE_OPTIONS_API__": false,
             "__VUE_PROD_DEVTOOLS__": true
         }),
+        // new OpenBrowserPlugin({ url: 'http://localhost:8080' })
     ],
     // 浏览器跨域
     devServer: {

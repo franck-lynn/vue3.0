@@ -1,0 +1,15 @@
+type Chat {
+   id: ID
+   text: String
+}
+
+
+# input TypeInput {
+#    sex: String
+#    age: Int
+# }
+
+type Query {
+   chat(id: ID): Chat
+   # chats: [Chat]
+}

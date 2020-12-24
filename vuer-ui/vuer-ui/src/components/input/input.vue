@@ -1,14 +1,27 @@
 <template>
     <div class="vuer-input" :class="{'vuer-input_suffix':showSuffix}">
-        <input class="vuer-input_inner" :class="{'is-disabled': disabled}" :placeholder="placeholder" :type="showPassword ? (passwordVisible ? 'text' : 'password') : type" :name="name" :value="value" @input="handleInput" :disabled=disabled>
+        <!-- <input class="vuer-input_inner" 
+          :class="{'is-disabled': disabled}" 
+          :placeholder="placeholder" :type="showPassword ? (passwordVisible ? 'text' : 'password') : type" 
+          :name="name" :value="value" @input="handleInput" :disabled=disabled> -->
+          
+          <!-- vue3.0 的v-model -->
+          
+        <input class="vuer-input_inner" 
+          :class="{'is-disabled': disabled}" 
+          :placeholder="placeholder" :type="showPassword ? (passwordVisible ? 'text' : 'password') : type" 
+          :name="name" :value="modelValue" @input="handleInput" :disabled=disabled>
         <span class="vuer-input_suffix">
-            <i class="iconfont icon-cancel" v-if="clearable && value" @click="clear"></i>
-            <i :class="`iconfont icon-password-${[passwordVisible ? 'visible': 'not-view']}`" v-if="showPassword && type=='password'" @click="handlePassword"></i>
+            <i class="iconfont icon-cancel" v-if="clearable && modelValue" @click="clear"></i>
+            <i :class="`iconfont icon-password-${[passwordVisible ? 'visible': 'not-view']}`" 
+              v-if="showPassword && type=='password'" @click="handlePassword"></i>
         </span>
     </div>
 </template>
 
 <script>
+    // vue3 中的 v-model 绑定视频教程
+    // https://www.bilibili.com/video/av754116529
     import { defineComponent, computed, ref } from 'vue'
     export default defineComponent({
         name: 'vuer-input',
@@ -19,18 +32,18 @@
             name: { type: String, default: '' },
             disabled: { type: Boolean, default: false },
             // 一般输入框 双绑的是 字符串类型
-            value: { type: String, default: '' },
+            modelValue: { type: String, default: '' },
             clearable: { type: Boolean, default: false },
             showPassword: { type: Boolean, default: false },
         },
         setup(props, ctx) {
             const { clearable, showPassword } = props
             const handleInput = (e) => {
-                ctx.emit('update:value', e.target.value)
+                ctx.emit('update:modelValue', e.target.value)
             }
             const clear = () => {
                 // 把内容清空, 通知 父组件, 让父组件把内容清空
-                ctx.emit("update:value", '')
+                ctx.emit("update:modelValue", '')
             }
             // 控制 小图标的显示, 密码 和 一次性清空的小图标
             const showSuffix = computed(() => (clearable || showPassword))
