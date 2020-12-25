@@ -83,22 +83,27 @@ const returnFields = (definitions, returnType, take, str = '', prev, deep = 0) =
     }
     return str
 }
-console.log(returnFields(typeDefs.definitions, 'Chat'))
+// console.log(returnFields(typeDefs.definitions, 'Chat'))
 
 // 当前端调用如下接口时:
 // http://localhost:3000/chat/2
-// 设计一个函数, 参数是 typeDefs 里的 query 元素下的字段
+// 设计一个函数, 参数是 typeDefs 里的 query 元素下的字段(函数)
 const getArgs = field => {
     const args = field.arguments
-    let sArgs = ''
-    let sArgsArr = []
-    let vArgs = ''
-    let pArgs = ''
+    let sArgs = '' // 函数的参数
+    let sArgsArr = [] // 函数参数的数组表示
+    let vArgs = '' // 变量参数
+    let pArgs = '' // 路径参数
     for (let i = 0; i < args.length; i++) {
-        sArgs = sArgs + args[i].name.value + ': ' + '$' + args[i].name.value + ' '
-        vArgs = vArgs + '$' + args[i].name.value + ': ' + args[i].type.name.value + ' '
-        pArgs = pArgs + '/:' + args[i].name.value
-        sArgsArr.push(args[i].name.value)
+        // 如果有函数参数, 则进行转化字符串工作
+        if(args[i] && args[i].name && args[i].name.value){
+            sArgs = sArgs + args[i].name.value + ': ' + '$' + args[i].name.value + ' ' // 形如 chat(id: $id), 函数的参数
+            if (args[i] && args[i].type && args[i].type.name && args[i].type.name.value){
+                vArgs = vArgs + '$' + args[i].name.value + ': ' + args[i].type.name.value + ' ' // 形如 cquery($id: ID), 变量参数
+            }
+            pArgs = pArgs + '/:' + args[i].name.value //  形如 path = '/chat/:id', 路径参数
+            sArgsArr.push(args[i].name.value) // 为变量参数赋值准备的参数数组
+        }
     }
     return { sArgs, vArgs, pArgs, sArgsArr }
 }
@@ -110,14 +115,30 @@ const fieldQuery = (field, definitions) => {
     let pArgs = args.pArgs
     let sArgsArr = args.sArgsArr
     // 函数的名称
-    const fn = field.name.value
-    const returnType = field.type.name.value
+    let fn  
+    if (field && field.name && field.name.value){
+        fn = field.name.value
+        // TODO: 驼峰转连字符
+    }else{
+        throw new Error('您没有定义需要的函数')
+    }
+    let returnType  
+    if (field && field.type && field.type.name && field.type.name.value){
+        returnType = field.type.name.value
+    }else{
+        throw new Error('您没有定义返回值的类型')
+    }
     // console.log(returnType)
     const returnValue = returnFields(definitions, returnType)
     const fnBody = '(' + vArgs + ')' + fn + '(' + sArgs + ')' + returnValue
+    
     const path = '/' + fn + pArgs
     const getVariable = (ctx) => {
-        return sArgsArr.map(item => ({ item: ctx.params[item] }))
+        if (sArgsArr && Array.isArray(sArgs)){
+             return sArgsArr.map(item => ({ item: ctx.params[item] }))
+        }else{
+            return null
+        }
     }
     console.log(path)
     console.log(fnBody)
@@ -139,4 +160,4 @@ const fn = (definitions) => {
     // return fields
 }
 
-fn(typeDefs.definitions)
+// fn(typeDefs.definitions)

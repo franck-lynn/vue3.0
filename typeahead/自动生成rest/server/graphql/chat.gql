@@ -11,5 +11,5 @@ type Chat {
 
 type Query {
    chat(id: ID): Chat
-   # chats: [Chat]
+   chats: [Chat]
 }

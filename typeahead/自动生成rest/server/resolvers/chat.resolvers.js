@@ -10,7 +10,7 @@ const chats = [
 const roleResolver = {
     Query: {
         chat: async (_, { id }) => chats.find(chat => chat.id === id),
-        // chats: async () => chats
+        chats: async () => chats
     }
 }
 
