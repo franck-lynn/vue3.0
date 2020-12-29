@@ -25,8 +25,8 @@
                 { id: 3, title: '订货', active: false },
                 { id: 4, title: '校对', active: true },
                 { id: 5, title: '付款', active: true },
-                { id: 6, title: '开票', active: false },
-                { id: 7, title: '收款', active: false },
+                { id: 6, title: '开票', active: true },
+                { id: 7, title: '收款', active: true },
             ])
             const flag = ref(false)
             const useDashboard = () => {

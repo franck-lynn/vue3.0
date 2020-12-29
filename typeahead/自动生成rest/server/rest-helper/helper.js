@@ -1,9 +1,15 @@
-const baseTypes = ['Number', 'number', 'Int', 'int', 'Float', 'float', 'Symbol', 'symbol', 'String', 'string', 'Boolean', 'boolean', 'undefined', 'Undefined', 'null', 'Null', 'ID', 'Id', 'id', '_ID', '_Id', '_id']
+const baseTypes = [
+    'Number', 'number', 'Int', 'int', 'Float', 'float',
+    'Symbol', 'symbol', 'String', 'string', 'Boolean',
+    'boolean', 'undefined', 'Undefined', 'null', 'Null',
+    'ID', 'Id', 'id', '_ID', '_Id', '_id'
+]
 // 判断是不是基本数据类型
 const isBaseType = (x) => baseTypes.includes(x)
 
 // TODO: take 功能未实现
 // TODO: 实现蹦床函数
+// TODO: 图算法优化的实现
 const returnFields = (definitions, returnType, take, str = '', prev, deep = 0) => {
     //! 1-1. 传入 Chat 类型
     // definitions 是typeDefs.definitions 的整个数组, returnType 是指定的返回值类型
