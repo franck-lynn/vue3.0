@@ -2,10 +2,8 @@
     <Form>
         <Field name="name" as="input" rules="required" />
         <ErrorMessage name="name" />
-        
         <label for="input">Field</label>
         <Field name="input" rules="required" />
-        
     </Form>
 </template>
 

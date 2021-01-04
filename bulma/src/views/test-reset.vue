@@ -19,7 +19,5 @@
 </script>
  
 <style lang="scss" scoped>
-    h1{
-        margin: 25px;
-    }
+    
 </style>
