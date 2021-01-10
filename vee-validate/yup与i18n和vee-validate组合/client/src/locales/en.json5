@@ -1,0 +1,30 @@
+{
+  // for english
+ index: {
+        // 首页欢迎词
+        welcome: "welcome",
+        login: "Sign in",
+        register: "Sign up"
+    },
+    login: {
+        signin: "Sign in to Pepper",
+        username: "username ot email address",
+        password: "password",
+        forgot: "forgot password?",
+        notMember: "New to Pepper?", 
+        createAccount: "Create an account"
+    }
+  // msg: 'こんにちは',
+  // named: '{msg} 日文',
+  // list: '{0} 日文',
+  // literal: "{'こんにちは'} 日文!",
+  // the_world: 'ザ・ワールド！',
+  // dio: 'ディオ 日文dio:',
+  // linked: '@:dio @:the_world 日文！！！！',
+  // car: 'car | cars',
+  // apple: 'no apples | one apple | {count} apples',
+  // banana: 'no bananas | {n} banana | {n} bananas',
+  
+  // 时间日期格式
+  // current: 'current Datetime'
+}

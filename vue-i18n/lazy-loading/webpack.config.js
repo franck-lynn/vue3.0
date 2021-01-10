@@ -77,31 +77,31 @@ const config = {
         // new OpenBrowserPlugin({ url: 'http://localhost:8080' })
     ],
     // 浏览器跨域
-    devServer: {
-        contentBase: "dist",
-        hot: true,
-        // https://www.jianshu.com/p/95ce563aa7af 请求转发的文章
-        proxy: {
-            // 1). 配置了一个代理, 只要是 graphql开头的请求, 就去找服务器 3000端口
-            //    捕获这个api标志, 如果api中有这个字符串, 就还是匹配, 例如
-            //    api 请求 /api/users, 会被代理到请求 http://www.xxxx.com/api/users
-            '/': {
-                // 2). 代理 api的地址, 就是需要跨域的api地址, 也就是目的地
-                // target: 'https://developer.github.com/v4/explorer/',
-                target: "http://localhost:3000/",
-                // target: "https://pet-library.moonhighway.com/",
-                // secure: false, // 如果是https接口，需要配置这个参数
-                // 这个设置一下就可以跨域了, 针对客户端的任何请求, 都进行转发
-                changeOrigin: true, // 是否跨域
-                // 3). 路径重写, 比如请求的路径试 /api/users
-                //     设置 '^/api': '' 后, 会把 /api去掉
-                //     直接访问 http://www.xxxx.com/users 
-                // pathRewrite: {
-                //     '^/api':""
-                // }
-            }
-        }
-    },
+    // devServer: {
+    //     contentBase: "dist",
+    //     hot: true,
+    //     // https://www.jianshu.com/p/95ce563aa7af 请求转发的文章
+    //     proxy: {
+    //         // 1). 配置了一个代理, 只要是 graphql开头的请求, 就去找服务器 3000端口
+    //         //    捕获这个api标志, 如果api中有这个字符串, 就还是匹配, 例如
+    //         //    api 请求 /api/users, 会被代理到请求 http://www.xxxx.com/api/users
+    //         '/': {
+    //             // 2). 代理 api的地址, 就是需要跨域的api地址, 也就是目的地
+    //             // target: 'https://developer.github.com/v4/explorer/',
+    //             target: "http://localhost:3000/",
+    //             // target: "https://pet-library.moonhighway.com/",
+    //             // secure: false, // 如果是https接口，需要配置这个参数
+    //             // 这个设置一下就可以跨域了, 针对客户端的任何请求, 都进行转发
+    //             changeOrigin: true, // 是否跨域
+    //             // 3). 路径重写, 比如请求的路径试 /api/users
+    //             //     设置 '^/api': '' 后, 会把 /api去掉
+    //             //     直接访问 http://www.xxxx.com/users 
+    //             // pathRewrite: {
+    //             //     '^/api':""
+    //             // }
+    //         }
+    //     }
+    // },
     // 浏览器报警, 加上错误定位就不报警了
     devtool: 'cheap-module-eval-source-map',
 }

@@ -29,6 +29,12 @@ const minLength = (value, [limit]) => {
     }
     return true;
 }
+const confirmed = (value, [target], ctx) => {
+    //! 是 form, 不是 from
+    if (value === ctx.form[target]) {
+        return true
+    }
+    return '密码不匹配'
+}
 
-
-export { reuqired, email, minLength }
+export { reuqired, email, minLength, confirmed }

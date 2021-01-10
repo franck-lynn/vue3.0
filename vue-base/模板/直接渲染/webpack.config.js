@@ -14,7 +14,7 @@ const config = {
     mode: "development",
     entry: "./src/main.js", // webpack 打包的入口文件
     output: { filename: "bundule.js", path: path.join(__dirname, 'dist') },
-    // target: 'web',
+
     module: {
         rules: [
             { test: /\.vue$/, use: 'vue-loader' },
@@ -35,6 +35,8 @@ const config = {
             { test: /.(png|jpg|gif|jpeg)$/, use: 'file-loader' },
             //配置 webpack 支持 .graphql 文件
             { test: /\.(graphql|gql)$/, exclude: /node_modules/, loader: 'graphql-tag/loader' },
+            // json5 加载器, 直接运行json5 导入得到 {}, 用这个加载器打包后运行才是正常的结果
+            { test: /\.json5$/, use: ['json5-loader'] }, // json5
         ]
     },
     resolve: {
@@ -62,37 +64,45 @@ const config = {
             // vue3.0 rc-3 以后, 推荐显式注明构建模式, 这里是开发时的配置, 生成模式重新配置
             "__VUE_OPTIONS_API__": false,
             "__VUE_PROD_DEVTOOLS__": true,
+            // 显式指定 i18n 构建配置
+            "__VUE_I18N_FULL_INSTALL__": true,
+            "__VUE_I18N_LEGACY_API__": true,
+            "__INTLIFY_PROD_DEVTOOLS__": false
         }),
+        // new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
+        new webpack.ProvidePlugin({
+            $: 'jquery', // ∵ typeahead 要用到 jquery, 所以, 在这里配置一下
+            jQuery: 'jquery'
+        })
         // new OpenBrowserPlugin({ url: 'http://localhost:8080' })
     ],
     // 浏览器跨域
     devServer: {
         contentBase: "dist",
         hot: true,
-        // proxy: {
-        //     // 1). 配置了一个代理, 只要是 graphql开头的请求, 就去找服务器 3000端口
-        //     //    捕获这个api标志, 如果api中有这个字符串, 就还是匹配, 例如
-        //     //    api 请求 /api/users, 会被代理到请求 http://www.xxxx.com/api/users
-        //     '/': { 
-        //         // 2). 代理 api的地址, 就是需要跨域的api地址, 也就是目的地
-        //         // target: 'https://developer.github.com/v4/explorer/',
-        //         target: "http://localhost:3000/graphql",
-        //         // target: "https://pet-library.moonhighway.com/",
-        //         // secure: false, // 如果是https接口，需要配置这个参数
-        //         // 这个设置一下就可以跨域了, 针对客户端的任何请求, 都进行转发
-        //         changeOrigin: true, // 是否跨域
-        //         // 3). 路径重写, 比如请求的路径试 /api/users
-        //         //     设置 '^/api': '' 后, 会把 /api去掉
-        //         //     直接访问 http://www.xxxx.com/users 
-        //         // pathRewrite: {
-        //         //     '^/api':""
-        //         // }
-        //     }
-        // }
+        // https://www.jianshu.com/p/95ce563aa7af 请求转发的文章
+        proxy: {
+            // 1). 配置了一个代理, 只要是 graphql开头的请求, 就去找服务器 3000端口
+            //    捕获这个api标志, 如果api中有这个字符串, 就还是匹配, 例如
+            //    api 请求 /api/users, 会被代理到请求 http://www.xxxx.com/api/users
+            '/': {
+                // 2). 代理 api的地址, 就是需要跨域的api地址, 也就是目的地
+                // target: 'https://developer.github.com/v4/explorer/',
+                target: "http://localhost:3000/",
+                // target: "https://pet-library.moonhighway.com/",
+                // secure: false, // 如果是https接口，需要配置这个参数
+                // 这个设置一下就可以跨域了, 针对客户端的任何请求, 都进行转发
+                changeOrigin: true, // 是否跨域
+                // 3). 路径重写, 比如请求的路径试 /api/users
+                //     设置 '^/api': '' 后, 会把 /api去掉
+                //     直接访问 http://www.xxxx.com/users 
+                // pathRewrite: {
+                //     '^/api':""
+                // }
+            }
+        }
     },
     // 浏览器报警, 加上错误定位就不报警了
-    // devtool: 'cheap-module-eval-source-map',
-    // wp5 要用下面这行了
-    devtool: 'source-map',
+    devtool: 'cheap-module-eval-source-map',
 }
 export default config
