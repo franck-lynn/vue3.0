@@ -6,6 +6,55 @@
   "description": "练习使用图标",
   "glyphs": [
     {
+      "icon_id": "13253772",
+      "name": "global",
+      "font_class": "global",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "11267798",
+      "name": "up",
+      "font_class": "up",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "10241310",
+      "name": "arrowup_bold",
+      "font_class": "arrowup_bold",
+      "unicode": "e760",
+      "unicode_decimal": 59232
+    },
+    {
+      "icon_id": "10241311",
+      "name": "arrowdown_bold",
+      "font_class": "arrowdown_bold",
+      "unicode": "e761",
+      "unicode_decimal": 59233
+    },
+    {
+      "icon_id": "433849",
+      "name": "minus",
+      "font_class": "minus",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "13896011",
+      "name": "minus",
+      "font_class": "minus1",
+      "unicode": "e77f",
+      "unicode_decimal": 59263
+    },
+    {
+      "icon_id": "14226983",
+      "name": "down",
+      "font_class": "down1",
+      "unicode": "e69c",
+      "unicode_decimal": 59036
+    },
+    {
       "icon_id": "928982",
       "name": "bars",
       "font_class": "bars",

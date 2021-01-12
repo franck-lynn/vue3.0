@@ -1,9 +1,4 @@
 <template>
-    <!-- <label for="locale">locale</label>
-    <select v-model="$i18n.locale">
-        <option>cn</option>
-        <option>en</option>
-    </select> -->
     <!-- 切换语言 -->
     <locale-changer></locale-changer>
     <!-- 直接路由出口, 根元素是 index.html 里的 <div id="root"></div> -->
@@ -29,4 +24,5 @@
     @include global-reset;
     // shared.scss 是 全局的样式入口文件
     @import 'scss/scss/entries/shared.scss';
+    @import '~@primer/octicons/build/build.css';
 </style>

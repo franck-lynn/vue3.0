@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "home": "这是Home页",
+    "about": "这是about页"
+  },
+  "navigations": {
+    "home": "主页",
+    "about": "关于"
+  },
+  "labels": {
+    "language": "语言"
+  }
+}

@@ -1,16 +1,18 @@
-import en from '../locales/en.json5' // 导入默认的语言
+import cn from '../locales/cn.json5' // 导入默认的语言
 import { SUPPORT_LOCALES, setupI18n, setI18nLanguage, loadLocaleMessages } from './i18n'
-// import { supportLocales } from './helper'
 
+
+//! i18n 的初始化
 const i18n = setupI18n({
     globalInjection: true,
     legacy: false,
-    locale: 'en',
-    fallbackLocale: 'en',
+    locale: process.env.VUE_APP_I18N_LOCALE || 'cn', // 设置地区, 本地语言
+    fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en', // set fallback locale, 回滚的语言
     messages: {
-        en
+        cn // 默认的语言包
     }
 })
+
 /*
     // 一次性自动加载所有翻译 json5 文件
     // const loadLocaleMessages = () => {

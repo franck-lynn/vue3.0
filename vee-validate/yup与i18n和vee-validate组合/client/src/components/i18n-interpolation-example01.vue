@@ -22,22 +22,18 @@
 <script>
     import { Field, Form, ErrorMessage } from 'vee-validate'
     import * as yup from 'yup';
-    import { setLocale } from 'yup';
+    import { useI18n } from 'vue-i18n'
+
     import { defineComponent } from 'vue'
     export default defineComponent({
         components: { VForm: Form, VField: Field, ErrorMessage },
         name: 'i18n-interpolation-example01',
         props: {},
         setup() {
-            setLocale({
-                mixed: {
-                    default: 'Não é válido',
-                },
-                number: {
-                    min: 'Deve ser maior que ${min}',
-                },
-            })
+            const { t } = useI18n({ useScope: 'global' })
+
             const schema = yup.object().shape({
+                // name: yup.string().required(t('langs.language')),
                 name: yup.string().required(),
                 age: yup.number().min(18),
                 ageConfirm: yup.number().required().positive().integer(),

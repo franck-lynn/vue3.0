@@ -16,7 +16,7 @@
     import { defineComponent, ref } from 'vue'
     export default defineComponent({
         name: 'profile',
-        props: { currentTag: String, default: '' },
+        props: { currentTag: {type: String, default: ''} },
         setup(props, ctx) {
             const isActive = ref(false)
             const isShow = ref(false)
@@ -60,7 +60,7 @@
         .dropdown-list__active {
 
             // 显示下拉菜单
-            // 只有再激活状态下才可以显示下来菜单, 所以需要两个状态, 一个判断是否激活, 一个判断是否显示
+            // 只有在激活状态下才可以显示下来菜单, 所以需要两个状态, 一个判断是否激活, 一个判断是否显示
             &.dropdown-list__show {
                 visibility: visible;
                 max-height: $height-dropdown-list; // 代替display 实现过渡效果

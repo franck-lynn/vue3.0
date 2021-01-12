@@ -9,6 +9,9 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 // import OpenBrowserPlugin from 'open-browser-webpack-plugin'
+// 第3方环境变量设置插件设置环境变量
+// https://github.com/mrsteele/dotenv-webpack
+import Dotenv from 'dotenv-webpack'
 
 const config = {
     mode: "development",
@@ -68,6 +71,12 @@ const config = {
             "__VUE_I18N_FULL_INSTALL__": true,
             "__VUE_I18N_LEGACY_API__": true,
             "__INTLIFY_PROD_DEVTOOLS__": false
+        }),
+        new Dotenv({
+            // https://www.webpackjs.com/plugins/environment-plugin/
+            // https://github.com/mrsteele/dotenv-webpack
+            path: path.resolve('../', '.env'),
+            safe: true
         }),
         // new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
         new webpack.ProvidePlugin({

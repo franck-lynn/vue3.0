@@ -1,5 +1,11 @@
 {
   // for english
+ langs: {
+    language: "Select Language",
+    // 支持的语言:
+    cn: "Simple-Chinese",
+    gb: "English",
+ },
  index: {
         // 首页欢迎词
         welcome: "welcome",
@@ -12,8 +18,12 @@
         password: "password",
         forgot: "forgot password?",
         notMember: "New to Pepper?", 
-        createAccount: "Create an account"
-    }
+        createAccount: "Create an account",
+        requiredEmail: "need email",
+    },
+    number: {
+        min: "less than {num}",
+    },
   // msg: 'こんにちは',
   // named: '{msg} 日文',
   // list: '{0} 日文',
